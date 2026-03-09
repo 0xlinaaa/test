@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0222)file:///Users/linna.zhu/Library/Application%20Support/Claude/local-agent-mode-sessions/14f06170-47a8-43b8-9cb1-bcbfbc636bd4/d81f8b62-87d4-4d6e-b9eb-2f960be2e693/local_2bd467c8-d1cd-44a5-8023-438bcf063bf0/outputs/index.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KYC Onboarding Analysis</title>
-<script src="./KYC Onboarding Analysis_files/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #1a1a2e; }
@@ -78,9 +78,9 @@
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab(&#39;matchain&#39;)">Matchain</div>
-  <div class="tab" onclick="switchTab(&#39;zoomex&#39;)">ZoomEx</div>
-  <div class="tab" onclick="switchTab(&#39;insights&#39;)">Insights &amp; Findings</div>
+  <div class="tab active" onclick="switchTab('matchain')">Matchain</div>
+  <div class="tab" onclick="switchTab('zoomex')">ZoomEx</div>
+  <div class="tab" onclick="switchTab('insights')">Insights & Findings</div>
 </div>
 
 <!-- ============ MATCHAIN ============ -->
@@ -99,11 +99,11 @@
     <h2>KYC Funnel — Matchain</h2>
     <div style="display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
       <div style="flex:1; min-width:320px;">
-        <canvas id="funnelMatchain" height="1022" style="display: block; box-sizing: border-box; height: 511px; width: 547px;" width="1094"></canvas>
+        <canvas id="funnelMatchain" height="280"></canvas>
       </div>
       <div style="flex:1; min-width:300px;">
         <table>
-          <tbody><tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
+          <tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
           <tr><td>Sign-up Users</td><td><strong>63</strong></td><td>100%</td><td>—</td></tr>
           <tr><td>KYC Initiated</td><td><strong>61</strong></td><td>96.8%</td><td><span class="badge badge-green">-2</span></td></tr>
           <tr><td><span style="color:#999">└ Non-eligible</span></td><td><span style="color:#999">3</span></td><td><span style="color:#999">4.9%</span></td><td></td></tr>
@@ -111,7 +111,7 @@
           <tr><td><span style="color:#10b981">├ Completed</span></td><td><strong>18</strong></td><td>28.6%</td><td></td></tr>
           <tr><td><span style="color:#f59e0b">├ Pending</span></td><td><strong>32</strong></td><td>50.8%</td><td></td></tr>
           <tr><td><span style="color:#ef4444">└ Failed</span></td><td><strong>8</strong></td><td>12.7%</td><td></td></tr>
-        </tbody></table>
+        </table>
       </div>
     </div>
   </div>
@@ -119,22 +119,22 @@
   <div class="charts-row">
     <div class="chart-card">
       <h3>Non-eligible KYC Users — Fail Reasons (3 users)</h3>
-      <canvas id="matchain_ne_reasons" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+      <canvas id="matchain_ne_reasons"></canvas>
     </div>
     <div class="chart-card">
       <h3>KYC Pending Users — Distribution by Current Step (32 users)</h3>
-      <canvas id="matchain_pending" width="1064" height="532" style="display: block; box-sizing: border-box; height: 266px; width: 532px;"></canvas>
+      <canvas id="matchain_pending"></canvas>
     </div>
   </div>
 
   <div class="charts-row">
     <div class="chart-card">
       <h3>KYC Failed Users — Fail Reasons (8 users)</h3>
-      <canvas id="matchain_failed_reasons" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+      <canvas id="matchain_failed_reasons"></canvas>
     </div>
     <div class="chart-card">
       <h3>KYC Failed Users — By Step (8 users)</h3>
-      <canvas id="matchain_failed_steps" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+      <canvas id="matchain_failed_steps"></canvas>
     </div>
   </div>
 
@@ -154,11 +154,11 @@
     <h2>KYC Funnel — ZoomEx</h2>
     <div style="display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
       <div style="flex:1; min-width:320px;">
-        <canvas id="funnelZoomex" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+        <canvas id="funnelZoomex" height="280"></canvas>
       </div>
       <div style="flex:1; min-width:300px;">
         <table>
-          <tbody><tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
+          <tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
           <tr><td>Sign-up Users</td><td><strong>153</strong></td><td>100%</td><td>—</td></tr>
           <tr><td>KYC Initiated</td><td><strong>147</strong></td><td>96.1%</td><td><span class="badge badge-green">-6</span></td></tr>
           <tr><td><span style="color:#999">└ Non-eligible</span></td><td><span style="color:#999">5</span></td><td><span style="color:#999">3.4%</span></td><td></td></tr>
@@ -166,7 +166,7 @@
           <tr><td><span style="color:#10b981">├ Completed</span></td><td><strong>13</strong></td><td>8.5%</td><td></td></tr>
           <tr><td><span style="color:#f59e0b">├ Pending</span></td><td><strong>96</strong></td><td>62.7%</td><td></td></tr>
           <tr><td><span style="color:#ef4444">└ Failed</span></td><td><strong>33</strong></td><td>21.6%</td><td></td></tr>
-        </tbody></table>
+        </table>
       </div>
     </div>
   </div>
@@ -174,22 +174,22 @@
   <div class="charts-row">
     <div class="chart-card">
       <h3>Non-eligible KYC Users — Fail Reasons (5 users)</h3>
-      <canvas id="zoomex_ne_reasons" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="zoomex_ne_reasons"></canvas>
     </div>
     <div class="chart-card">
       <h3>KYC Pending Users — Distribution by Current Step (96 users)</h3>
-      <canvas id="zoomex_pending" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="zoomex_pending"></canvas>
     </div>
   </div>
 
   <div class="charts-row">
     <div class="chart-card">
       <h3>KYC Failed Users — Fail Reasons (33 users)</h3>
-      <canvas id="zoomex_failed_reasons" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="zoomex_failed_reasons"></canvas>
     </div>
     <div class="chart-card">
       <h3>KYC Failed Users — By Step (33 users)</h3>
-      <canvas id="zoomex_failed_steps" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="zoomex_failed_steps"></canvas>
     </div>
   </div>
 
@@ -244,11 +244,11 @@
   <div class="charts-row">
     <div class="chart-card">
       <h3>Completion Rate Comparison</h3>
-      <canvas id="insight_completion" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="insight_completion"></canvas>
     </div>
     <div class="chart-card">
       <h3>Eligible User Status — Side by Side</h3>
-      <canvas id="insight_status" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      <canvas id="insight_status"></canvas>
     </div>
   </div>
 
@@ -369,6 +369,5 @@ new Chart('insight_status', {
 });
 </script>
 
-
-
-</body></html>
+</body>
+</html>
