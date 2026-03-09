@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!-- saved from url=(0222)file:///Users/linna.zhu/Library/Application%20Support/Claude/local-agent-mode-sessions/14f06170-47a8-43b8-9cb1-bcbfbc636bd4/d81f8b62-87d4-4d6e-b9eb-2f960be2e693/local_2bd467c8-d1cd-44a5-8023-438bcf063bf0/outputs/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC Onboarding Analysis</title>
+<script src="./KYC Onboarding Analysis_files/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 32px 40px; }
+  .header h1 { font-size: 28px; font-weight: 700; }
+  .header p { opacity: .7; margin-top: 6px; font-size: 14px; }
+  .tabs { display: flex; gap: 8px; padding: 20px 40px 0; background: #fff; border-bottom: 1px solid #e0e0e0; }
+  .tab { padding: 12px 28px; cursor: pointer; font-weight: 600; font-size: 15px; border-bottom: 3px solid transparent; color: #666; transition: all .2s; }
+  .tab:hover { color: #1a1a2e; }
+  .tab.active { color: #1a1a2e; border-bottom-color: #4361ee; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px 40px 60px; }
+  .bp-section { display: none; }
+  .bp-section.active { display: block; }
+
+  /* Funnel */
+  .funnel-card { background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .funnel-card h2 { font-size: 18px; margin-bottom: 20px; color: #1a1a2e; }
+  .funnel { display: flex; flex-direction: column; gap: 0; align-items: center; }
+  .funnel-step { position: relative; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; font-weight: 600; padding: 16px 20px; min-height: 56px; transition: transform .2s; }
+  .funnel-step:hover { transform: scale(1.02); }
+  .funnel-step .label { font-size: 14px; }
+  .funnel-step .value { font-size: 22px; font-weight: 700; }
+  .funnel-step .pct { font-size: 12px; opacity: .85; }
+  .funnel-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 14px solid #cbd5e1; margin: -1px 0; }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .stat-card .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 6px; }
+  .stat-card .stat-value { font-size: 28px; font-weight: 700; }
+  .stat-card .stat-sub { font-size: 12px; color: #888; margin-top: 4px; }
+
+  /* Charts grid */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .chart-card { background: #fff; border-radius: 12px; padding: 24px 28px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .chart-card h3 { font-size: 15px; margin-bottom: 16px; color: #1a1a2e; }
+  .chart-card canvas { max-height: 300px; }
+
+  /* Tables */
+  .table-card { background: #fff; border-radius: 12px; padding: 24px 28px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 24px; }
+  .table-card h3 { font-size: 15px; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; padding: 10px 12px; background: #f8f9fa; border-bottom: 2px solid #e0e0e0; font-weight: 600; color: #555; }
+  td { padding: 10px 12px; border-bottom: 1px solid #eee; }
+  tr:hover td { background: #f8f9fa; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .badge-green { background: #d4edda; color: #155724; }
+  .badge-yellow { background: #fff3cd; color: #856404; }
+  .badge-red { background: #f8d7da; color: #721c24; }
+  .badge-gray { background: #e9ecef; color: #495057; }
+
+  /* Insights */
+  .insights-card { background: linear-gradient(135deg, #fff7ed 0%, #fff 100%); border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 24px 28px; margin-bottom: 24px; }
+  .insights-card h3 { font-size: 16px; margin-bottom: 12px; color: #92400e; }
+  .insights-card ul { list-style: none; padding: 0; }
+  .insights-card li { padding: 6px 0; font-size: 14px; line-height: 1.6; }
+  .insights-card li::before { content: "→ "; color: #f59e0b; font-weight: 700; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .charts-row { grid-template-columns: 1fr; }
+    .container { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Business Partners KYC Funnel Analysis</h1>
+  <p>Sign-up to KYC Completion · Data Range: up to March 7, 2026</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(&#39;matchain&#39;)">Matchain</div>
+  <div class="tab" onclick="switchTab(&#39;zoomex&#39;)">ZoomEx</div>
+  <div class="tab" onclick="switchTab(&#39;insights&#39;)">Insights &amp; Findings</div>
+</div>
+
+<!-- ============ MATCHAIN ============ -->
+<div class="container">
+<div id="tab-matchain" class="bp-section active">
+
+  <div class="stats-grid" style="margin-top:4px;">
+    <div class="stat-card"><div class="stat-label">Sign-up Users</div><div class="stat-value">63</div><div class="stat-sub">100%</div></div>
+    <div class="stat-card"><div class="stat-label">KYC Initiated</div><div class="stat-value" style="color:#4361ee">61</div><div class="stat-sub">96.8% of sign-ups</div></div>
+    <div class="stat-card"><div class="stat-label">Eligible Users</div><div class="stat-value" style="color:#7c3aed">58</div><div class="stat-sub">95.1% of initiated</div></div>
+    <div class="stat-card"><div class="stat-label">KYC Completed</div><div class="stat-value" style="color:#10b981">18</div><div class="stat-sub">31.0% of eligible</div></div>
+  </div>
+
+  <!-- Funnel visual -->
+  <div class="funnel-card">
+    <h2>KYC Funnel — Matchain</h2>
+    <div style="display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
+      <div style="flex:1; min-width:320px;">
+        <canvas id="funnelMatchain" height="1022" style="display: block; box-sizing: border-box; height: 511px; width: 547px;" width="1094"></canvas>
+      </div>
+      <div style="flex:1; min-width:300px;">
+        <table>
+          <tbody><tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
+          <tr><td>Sign-up Users</td><td><strong>63</strong></td><td>100%</td><td>—</td></tr>
+          <tr><td>KYC Initiated</td><td><strong>61</strong></td><td>96.8%</td><td><span class="badge badge-green">-2</span></td></tr>
+          <tr><td><span style="color:#999">└ Non-eligible</span></td><td><span style="color:#999">3</span></td><td><span style="color:#999">4.9%</span></td><td></td></tr>
+          <tr><td>Eligible KYC Users</td><td><strong>58</strong></td><td>92.1%</td><td><span class="badge badge-green">-3</span></td></tr>
+          <tr><td><span style="color:#10b981">├ Completed</span></td><td><strong>18</strong></td><td>28.6%</td><td></td></tr>
+          <tr><td><span style="color:#f59e0b">├ Pending</span></td><td><strong>32</strong></td><td>50.8%</td><td></td></tr>
+          <tr><td><span style="color:#ef4444">└ Failed</span></td><td><strong>8</strong></td><td>12.7%</td><td></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Non-eligible KYC Users — Fail Reasons (3 users)</h3>
+      <canvas id="matchain_ne_reasons" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>KYC Pending Users — Distribution by Current Step (32 users)</h3>
+      <canvas id="matchain_pending" width="1064" height="532" style="display: block; box-sizing: border-box; height: 266px; width: 532px;"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>KYC Failed Users — Fail Reasons (8 users)</h3>
+      <canvas id="matchain_failed_reasons" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>KYC Failed Users — By Step (8 users)</h3>
+      <canvas id="matchain_failed_steps" width="1064" height="600" style="display: block; box-sizing: border-box; height: 300px; width: 532px;"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ ZOOMEX ============ -->
+<div id="tab-zoomex" class="bp-section">
+
+  <div class="stats-grid" style="margin-top:4px;">
+    <div class="stat-card"><div class="stat-label">Sign-up Users</div><div class="stat-value">153</div><div class="stat-sub">100%</div></div>
+    <div class="stat-card"><div class="stat-label">KYC Initiated</div><div class="stat-value" style="color:#4361ee">147</div><div class="stat-sub">96.1% of sign-ups</div></div>
+    <div class="stat-card"><div class="stat-label">Eligible Users</div><div class="stat-value" style="color:#7c3aed">142</div><div class="stat-sub">96.6% of initiated</div></div>
+    <div class="stat-card"><div class="stat-label">KYC Completed</div><div class="stat-value" style="color:#10b981">13</div><div class="stat-sub">9.2% of eligible</div></div>
+  </div>
+
+  <div class="funnel-card">
+    <h2>KYC Funnel — ZoomEx</h2>
+    <div style="display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
+      <div style="flex:1; min-width:320px;">
+        <canvas id="funnelZoomex" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+      </div>
+      <div style="flex:1; min-width:300px;">
+        <table>
+          <tbody><tr><th>Stage</th><th>Users</th><th>% of Sign-ups</th><th>Drop-off</th></tr>
+          <tr><td>Sign-up Users</td><td><strong>153</strong></td><td>100%</td><td>—</td></tr>
+          <tr><td>KYC Initiated</td><td><strong>147</strong></td><td>96.1%</td><td><span class="badge badge-green">-6</span></td></tr>
+          <tr><td><span style="color:#999">└ Non-eligible</span></td><td><span style="color:#999">5</span></td><td><span style="color:#999">3.4%</span></td><td></td></tr>
+          <tr><td>Eligible KYC Users</td><td><strong>142</strong></td><td>92.8%</td><td><span class="badge badge-green">-5</span></td></tr>
+          <tr><td><span style="color:#10b981">├ Completed</span></td><td><strong>13</strong></td><td>8.5%</td><td></td></tr>
+          <tr><td><span style="color:#f59e0b">├ Pending</span></td><td><strong>96</strong></td><td>62.7%</td><td></td></tr>
+          <tr><td><span style="color:#ef4444">└ Failed</span></td><td><strong>33</strong></td><td>21.6%</td><td></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Non-eligible KYC Users — Fail Reasons (5 users)</h3>
+      <canvas id="zoomex_ne_reasons" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>KYC Pending Users — Distribution by Current Step (96 users)</h3>
+      <canvas id="zoomex_pending" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>KYC Failed Users — Fail Reasons (33 users)</h3>
+      <canvas id="zoomex_failed_reasons" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>KYC Failed Users — By Step (33 users)</h3>
+      <canvas id="zoomex_failed_steps" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ INSIGHTS ============ -->
+<div id="tab-insights" class="bp-section">
+
+  <div class="insights-card">
+    <h3>Key Finding #1: Address Verification is the #1 Bottleneck</h3>
+    <ul>
+      <li><strong>ZoomEx:</strong> 100% of eligible-but-failed users (33/33) failed at <strong>Step 6 – AddressProof</strong>. Of these, 30 failed due to address verification and 3 due to WRONG_USER_REGION.</li>
+      <li><strong>Matchain:</strong> 75% of failed users (6/8) also failed at AddressProof. The remaining 2 failed at ID/Passport scan.</li>
+      <li>This is the single most impactful step to improve — fixing address verification would recover the majority of failed users.</li>
+    </ul>
+  </div>
+
+  <div class="insights-card">
+    <h3>Key Finding #2: ZoomEx Has Significantly Lower Completion Rate</h3>
+    <ul>
+      <li><strong>ZoomEx completion rate: 9.2%</strong> of eligible users vs. <strong>Matchain: 31.0%</strong> — a 3.4x difference.</li>
+      <li>ZoomEx has 96 users (67.6% of eligible) still pending, suggesting many users start but abandon the flow mid-way.</li>
+      <li>The largest pending bottleneck for ZoomEx is Step 6 – AddressProof (29 users) and Step 11 – ID Scan (19 users).</li>
+    </ul>
+  </div>
+
+  <div class="insights-card">
+    <h3>Key Finding #3: Non-eligible Users Are Almost Entirely WRONG_USER_REGION</h3>
+    <ul>
+      <li>Across both partners, 7 out of 8 non-eligible users were rejected for <strong>WRONG_USER_REGION</strong>.</li>
+      <li><strong>Countries:</strong> Nepal (2), Thailand (1*), Morocco (1), China (1), Paraguay (1), Bangladesh (1). *Thailand data from Matchain's non-eligible with missing country.</li>
+      <li>Consider adding region eligibility checks <em>before</em> users enter the KYC flow to save effort and improve UX.</li>
+    </ul>
+  </div>
+
+  <div class="insights-card">
+    <h3>Key Finding #4: Platform Distribution</h3>
+    <ul>
+      <li>The vast majority of eligible users are on <strong>Web</strong> platform: Matchain 94.8% (55/58), ZoomEx 84.5% (120/142).</li>
+      <li>ZoomEx has 22 users (15.5%) with no platform recorded — this data quality gap is worth investigating.</li>
+    </ul>
+  </div>
+
+  <div class="insights-card">
+    <h3>Key Finding #5: Address Verification Failures Are Multi-language</h3>
+    <ul>
+      <li>The address verification error message appears in at least 8 languages (English, Japanese, Spanish, Russian, French, Slovak, Malay, Chinese, Burmese, Italian, Polish), indicating a geographically diverse user base.</li>
+      <li>This suggests the issue is systemic — not limited to one region — and may be related to the address validation service itself rather than user input quality.</li>
+    </ul>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Completion Rate Comparison</h3>
+      <canvas id="insight_completion" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Eligible User Status — Side by Side</h3>
+      <canvas id="insight_status" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const colors = {
+  blue: '#4361ee', purple: '#7c3aed', green: '#10b981', yellow: '#f59e0b',
+  red: '#ef4444', gray: '#94a3b8', orange: '#f97316', pink: '#ec4899',
+  teal: '#14b8a6', indigo: '#6366f1', cyan: '#06b6d4', lime: '#84cc16'
+};
+const palette = [colors.blue, colors.purple, colors.green, colors.yellow, colors.red, colors.orange, colors.pink, colors.teal, colors.indigo, colors.cyan, colors.lime, colors.gray];
+
+function switchTab(id) {
+  document.querySelectorAll('.bp-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function barChart(ctx, labels, data, bgColors) {
+  return new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: bgColors || palette, borderRadius: 6, maxBarThickness: 48 }] },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + ' users' } } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+  });
+}
+
+function doughnut(ctx, labels, data, bgColors) {
+  return new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: bgColors || palette, borderWidth: 2, borderColor: '#fff' }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { padding: 16, font: { size: 12 } } } } }
+  });
+}
+
+function funnelBar(ctx, labels, data, bgColors) {
+  return new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: bgColors, borderRadius: 6, maxBarThickness: 52 }] },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + ' users' } } }, scales: { x: { beginAtZero: true } } }
+  });
+}
+
+// MATCHAIN
+funnelBar('funnelMatchain',
+  ['Sign-up (63)', 'KYC Initiated (61)', 'Non-eligible (3)', 'Eligible (58)', 'Completed (18)', 'Pending (32)', 'Failed (8)'],
+  [63, 61, 3, 58, 18, 32, 8],
+  ['#1a1a2e', colors.blue, colors.gray, colors.purple, colors.green, colors.yellow, colors.red]
+);
+
+doughnut('matchain_ne_reasons', ['WRONG_USER_REGION', 'fiat24 rejected'], [2, 1], [colors.red, colors.orange]);
+
+barChart('matchain_pending',
+  ['Step 1 - ConfirmCountry', 'Step 4 - Gender', 'Step 5 - TermsOfService', 'Step 6 - AddressProof', 'Step 11 - ID/Passport Scan'],
+  [7, 9, 1, 10, 5]
+);
+
+doughnut('matchain_failed_reasons',
+  ['Address verification failed', 'WRONG_USER_REGION', 'Passport expired/invalid', 'Failed face recognition'],
+  [4, 2, 1, 1], [colors.red, colors.orange, colors.purple, colors.pink]
+);
+
+doughnut('matchain_failed_steps',
+  ['Step 6 - AddressProof', 'Step 11 - ID/Passport Scan'],
+  [6, 2], [colors.red, colors.blue]
+);
+
+// ZOOMEX
+funnelBar('funnelZoomex',
+  ['Sign-up (153)', 'KYC Initiated (147)', 'Non-eligible (5)', 'Eligible (142)', 'Completed (13)', 'Pending (96)', 'Failed (33)'],
+  [153, 147, 5, 142, 13, 96, 33],
+  ['#1a1a2e', colors.blue, colors.gray, colors.purple, colors.green, colors.yellow, colors.red]
+);
+
+doughnut('zoomex_ne_reasons', ['WRONG_USER_REGION'], [5], [colors.red]);
+
+barChart('zoomex_pending',
+  ['Step 1 - ConfirmCountry', 'Step 4 - Gender', 'Step 5 - TermsOfService', 'Step 6 - AddressProof', 'Step 7 - Agreements', 'Step 10 - LiabilityWaiver', 'Step 11 - ID/Passport Scan', 'Step 13 - SignFormA'],
+  [17, 15, 10, 29, 2, 3, 19, 1]
+);
+
+doughnut('zoomex_failed_reasons',
+  ['Address verification failed', 'WRONG_USER_REGION'],
+  [30, 3], [colors.red, colors.orange]
+);
+
+doughnut('zoomex_failed_steps',
+  ['Step 6 - AddressProof'],
+  [33], [colors.red]
+);
+
+// INSIGHTS CHARTS
+new Chart('insight_completion', {
+  type: 'bar',
+  data: {
+    labels: ['Matchain', 'ZoomEx'],
+    datasets: [
+      { label: 'Completion Rate (% of eligible)', data: [31.0, 9.2], backgroundColor: [colors.green, colors.green], borderRadius: 6, maxBarThickness: 60 },
+      { label: 'Failure Rate (% of eligible)', data: [13.8, 23.2], backgroundColor: [colors.red, colors.red], borderRadius: 6, maxBarThickness: 60 }
+    ]
+  },
+  options: { responsive: true, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }, plugins: { tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw + '%' } } } }
+});
+
+new Chart('insight_status', {
+  type: 'bar',
+  data: {
+    labels: ['Matchain', 'ZoomEx'],
+    datasets: [
+      { label: 'Completed', data: [18, 13], backgroundColor: colors.green, borderRadius: 4 },
+      { label: 'Pending', data: [32, 96], backgroundColor: colors.yellow, borderRadius: 4 },
+      { label: 'Failed', data: [8, 33], backgroundColor: colors.red, borderRadius: 4 }
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } }
+});
+</script>
+
+
+
+</body></html>
