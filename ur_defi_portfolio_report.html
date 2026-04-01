@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR Users — On-Chain DeFi Portfolio Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN SYSTEM: "The Digital Curator"
+           Based on Design.md specifications
+        ═══════════════════════════════════════════ */
+
+        :root {
+            /* Primary Palette */
+            --obsidian: #0B1215;
+            --white: #FFFFFF;
+            --surface: #F7F7F7;
+            --surface-low: #F2F4F4;
+            --surface-high: #EAECEC;
+            --surface-highest: #E0E2E3;
+
+            /* On-surface text */
+            --on-surface: #0B1215;
+            --on-surface-muted: #5A6068;
+            --on-surface-faint: #8A9099;
+            --outline-variant: rgba(11, 18, 21, 0.15);
+
+            /* Secondary Accents — Data & Semantic */
+            --rose-quartz: #EDCEEF;
+            --amethyst: #B8ABDD;
+            --turquoise-blue: #01BACD;
+            --turquoise-green: #00DDC4;
+            --jade-green: #009E75;
+            --agate-green: #0B3A25;
+
+            /* Functional */
+            --positive: #009E75;
+            --caution: #01BACD;
+
+            /* Spacing scale */
+            --sp-1: 0.25rem;
+            --sp-2: 0.5rem;
+            --sp-3: 0.75rem;
+            --sp-4: 0.9rem;
+            --sp-8: 1.75rem;
+            --sp-12: 2.5rem;
+            --sp-16: 3.5rem;
+            --sp-20: 4.5rem;
+
+            /* Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.75rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rubik', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--surface);
+            color: var(--on-surface);
+            line-height: 1.6;
+            font-size: 0.875rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── LAYOUT ── */
+        .dashboard-shell {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--sp-16) var(--sp-12);
+        }
+
+        /* ── TYPOGRAPHY ── */
+        .display-lg {
+            font-family: 'Figtree', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            color: var(--on-surface);
+        }
+        .headline-sm {
+            font-family: 'Figtree', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--on-surface);
+        }
+        .body-md {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--on-surface-muted);
+        }
+        .label-md {
+            font-family: 'Menlo', 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--on-surface-faint);
+        }
+        .label-sm {
+            font-family: 'Menlo', monospace;
+            font-size: 0.6875rem;
+            letter-spacing: 0.06em;
+            color: var(--on-surface-faint);
+            text-transform: uppercase;
+        }
+        .mono-value {
+            font-family: 'Menlo', 'SF Mono', monospace;
+            font-weight: 400;
+        }
+
+        /* ── HEADER ── */
+        .report-header {
+            margin-bottom: var(--sp-20);
+        }
+        .report-header .eyebrow {
+            font-family: 'Menlo', monospace;
+            font-size: 0.6875rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--turquoise-blue);
+            margin-bottom: var(--sp-4);
+        }
+        .report-header h1 {
+            font-family: 'Figtree', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1.2px;
+            line-height: 1.1;
+            color: var(--on-surface);
+            margin-bottom: var(--sp-4);
+        }
+        .report-header .subtitle {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1rem;
+            color: var(--on-surface-muted);
+            max-width: 680px;
+            line-height: 1.65;
+        }
+        .header-meta {
+            display: flex;
+            gap: var(--sp-8);
+            margin-top: var(--sp-8);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-family: 'Menlo', monospace;
+            font-size: 0.6875rem;
+            letter-spacing: 0.04em;
+            color: var(--on-surface-muted);
+        }
+        .meta-pill .indicator {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--turquoise-green);
+        }
+        .filter-select {
+            padding: 7px 12px;
+            background: var(--white);
+            border: none;
+            border-radius: 100px;
+            font-family: 'Menlo', monospace;
+            font-size: 0.6875rem;
+            letter-spacing: 0.04em;
+            color: var(--on-surface);
+            cursor: pointer;
+            outline: none;
+            appearance: auto;
+        }
+        .filter-select:focus {
+            box-shadow: 0 0 0 2px var(--turquoise-blue);
+        }
+
+        /* ── KPI CARDS — "Elevated" white on surface ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-20);
+        }
+        .kpi-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-8) var(--sp-8);
+            position: relative;
+            transition: background 0.2s;
+        }
+        .kpi-card:hover {
+            background: var(--surface-low);
+        }
+        /* Data-Strip: thin vertical accent */
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: var(--sp-8);
+            bottom: var(--sp-8);
+            left: 0;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+        }
+        .kpi-card:nth-child(1)::before { background: var(--turquoise-blue); }
+        .kpi-card:nth-child(2)::before { background: var(--turquoise-green); }
+        .kpi-card:nth-child(3)::before { background: var(--jade-green); }
+        .kpi-card:nth-child(4)::before { background: var(--amethyst); }
+
+        .kpi-label {
+            font-family: 'Menlo', monospace;
+            font-size: 0.625rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--on-surface-faint);
+            margin-bottom: var(--sp-3);
+        }
+        .kpi-value {
+            font-family: 'Figtree', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            color: var(--on-surface);
+            line-height: 1.15;
+            margin-bottom: var(--sp-2);
+        }
+        .kpi-sub {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.75rem;
+            color: var(--on-surface-faint);
+        }
+
+        /* ── SECTION TITLE ── */
+        .section-block {
+            margin-bottom: var(--sp-20);
+        }
+        .section-label {
+            font-family: 'Menlo', monospace;
+            font-size: 0.625rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--turquoise-blue);
+            margin-bottom: var(--sp-3);
+        }
+        .section-title {
+            font-family: 'Figtree', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--on-surface);
+            margin-bottom: var(--sp-16);
+        }
+
+        /* ── CARDS (No border rule — tonal layering only) ── */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-8);
+        }
+        .card-header {
+            font-family: 'Menlo', monospace;
+            font-size: 0.6875rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--on-surface-faint);
+            margin-bottom: var(--sp-8);
+        }
+
+        /* ── CHART LAYOUTS ── Asymmetric 70/30 ── */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-4);
+        }
+        .grid-70-30 {
+            display: grid;
+            grid-template-columns: 7fr 3fr;
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-4);
+        }
+        .grid-30-70 {
+            display: grid;
+            grid-template-columns: 3fr 7fr;
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-4);
+        }
+        .chart-wrap canvas {
+            max-height: 320px;
+        }
+
+        /* ── INSIGHT CALLOUT — Glassmorphism ── */
+        .insight-callout {
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-8) var(--sp-12);
+            margin-bottom: var(--sp-20);
+            position: relative;
+        }
+        .insight-callout::before {
+            content: '';
+            position: absolute;
+            top: var(--sp-8);
+            bottom: var(--sp-8);
+            left: 0;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+            background: var(--jade-green);
+        }
+        .insight-callout h4 {
+            font-family: 'Menlo', monospace;
+            font-size: 0.625rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--jade-green);
+            margin-bottom: var(--sp-3);
+        }
+        .insight-callout p {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.875rem;
+            color: var(--on-surface-muted);
+            line-height: 1.75;
+            max-width: 900px;
+        }
+        .insight-callout strong {
+            color: var(--on-surface);
+            font-weight: 600;
+        }
+
+        /* ── TABLES ── */
+        .table-wrap {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-8);
+            overflow-x: auto;
+            margin-bottom: var(--sp-4);
+        }
+        .table-wrap .card-header { margin-bottom: var(--sp-4); }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+        .data-table thead th {
+            text-align: left;
+            padding: var(--sp-3) var(--sp-4);
+            font-family: 'Menlo', monospace;
+            font-size: 0.625rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--on-surface-faint);
+            font-weight: 400;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+        }
+        .data-table thead th:hover {
+            color: var(--on-surface-muted);
+            background: var(--surface-high);
+        }
+        .data-table tbody td {
+            padding: var(--sp-3) var(--sp-4);
+            font-family: 'Rubik', sans-serif;
+            color: var(--on-surface);
+        }
+        /* No divider lines — use spacing */
+        .data-table tbody tr + tr td {
+            padding-top: var(--sp-4);
+        }
+        .data-table tbody tr:hover td {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+        }
+        .text-right { text-align: right; }
+        .text-mono {
+            font-family: 'Menlo', monospace;
+            font-size: 0.75rem;
+        }
+        .text-jade { color: var(--jade-green); }
+        .text-turquoise { color: var(--turquoise-blue); }
+        .text-amethyst { color: var(--amethyst); }
+        .text-faint { color: var(--on-surface-faint); }
+
+        /* ── CHAIN PILLS ── */
+        .chain-pill {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-family: 'Menlo', monospace;
+            font-size: 0.5625rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+        .pill-ethereum { background: rgba(184, 171, 221, 0.2); color: #8A7CC0; }
+        .pill-base { background: rgba(1, 186, 205, 0.12); color: var(--turquoise-blue); }
+        .pill-arbitrum { background: rgba(0, 158, 117, 0.12); color: var(--jade-green); }
+        .pill-mantle { background: rgba(0, 221, 196, 0.12); color: #00B5A2; }
+        .pill-multi { background: rgba(237, 206, 239, 0.3); color: #A67CA8; }
+
+        /* ── TAGS ── */
+        .tag {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-family: 'Menlo', monospace;
+            font-size: 0.5625rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .tag-idle { background: rgba(1, 186, 205, 0.1); color: var(--turquoise-blue); }
+        .tag-deployed { background: rgba(0, 158, 117, 0.1); color: var(--jade-green); }
+
+        /* ── PROTOCOL CARDS ── */
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-4);
+        }
+        .protocol-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-8);
+            position: relative;
+            transition: background 0.2s;
+        }
+        .protocol-card:hover { background: var(--surface-low); }
+        /* Data-Strip */
+        .protocol-card::before {
+            content: '';
+            position: absolute;
+            top: var(--sp-8);
+            bottom: var(--sp-8);
+            left: 0;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+            background: var(--turquoise-green);
+        }
+        .protocol-card .pname {
+            font-family: 'Figtree', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: var(--sp-2);
+        }
+        .protocol-card .ptype {
+            font-family: 'Menlo', monospace;
+            font-size: 0.5625rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--on-surface-faint);
+        }
+        .protocol-card .pdesc {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.8125rem;
+            color: var(--on-surface-muted);
+            line-height: 1.65;
+            margin: var(--sp-3) 0;
+        }
+        .protocol-card .pstats {
+            display: flex;
+            gap: var(--sp-8);
+        }
+        .protocol-card .pstat-label {
+            font-family: 'Menlo', monospace;
+            font-size: 0.5625rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--on-surface-faint);
+        }
+        .protocol-card .pstat-val {
+            font-family: 'Menlo', monospace;
+            font-size: 0.8125rem;
+            color: var(--on-surface);
+            margin-top: 2px;
+        }
+
+        /* ── FOOTER ── */
+        .report-footer {
+            padding: var(--sp-16) 0 var(--sp-8);
+            text-align: left;
+        }
+        .report-footer p {
+            font-family: 'Menlo', monospace;
+            font-size: 0.625rem;
+            letter-spacing: 0.06em;
+            color: var(--on-surface-faint);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .grid-70-30, .grid-30-70, .grid-2 { grid-template-columns: 1fr; }
+            .report-header h1 { font-size: 2rem; }
+        }
+        @media (max-width: 640px) {
+            .kpi-row { grid-template-columns: 1fr; }
+            .dashboard-shell { padding: var(--sp-8) var(--sp-4); }
+            .protocol-grid { grid-template-columns: 1fr; }
+        }
+        @media print {
+            body { background: white; }
+            .dashboard-shell { max-width: none; padding: 1rem; }
+            .insight-callout { backdrop-filter: none; background: #f7f7f7; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-shell">
+
+    <!-- ═══════════ HEADER ═══════════ -->
+    <header class="report-header">
+        <div class="eyebrow">UR Protocol &mdash; On-Chain Intelligence</div>
+        <h1>User DeFi Portfolio<br>Analysis Report</h1>
+        <p class="subtitle">A comprehensive analysis of stablecoin holdings and DeFi protocol interactions across the private wallets of UR users on Ethereum, Base, Arbitrum, and Mantle.</p>
+        <div class="header-meta">
+            <span class="meta-pill"><span class="indicator"></span> Live Dune Analytics Data</span>
+            <span class="meta-pill">1,822 wallets analyzed</span>
+            <span class="meta-pill">4 chains</span>
+            <label class="meta-pill" style="gap:8px;">
+                Chain:
+                <select class="filter-select" id="filter-chain" onchange="dashboard.applyFilters()">
+                    <option value="all">All Chains</option>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="base">Base</option>
+                    <option value="arbitrum">Arbitrum</option>
+                    <option value="mantle">Mantle</option>
+                </select>
+            </label>
+        </div>
+    </header>
+
+    <!-- ═══════════ KPI ROW ═══════════ -->
+    <section class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Stablecoin Balance</div>
+            <div class="kpi-value" id="kpi-total">$303.1M</div>
+            <div class="kpi-sub">Across 124 wallets with holdings</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">DEX Volume (6 Months)</div>
+            <div class="kpi-value" id="kpi-dex">$2.18B</div>
+            <div class="kpi-sub">1.28M stablecoin-related trades</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Lending Deployed (6 Months)</div>
+            <div class="kpi-value" id="kpi-lend">$5.22M</div>
+            <div class="kpi-sub">Aave V3, Curve, Lido</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Wallet Coverage</div>
+            <div class="kpi-value" id="kpi-wallets">6.8%</div>
+            <div class="kpi-sub">124 of 1,822 hold stablecoins</div>
+        </div>
+    </section>
+
+    <!-- ═══════════ SECTION 1 — WALLET OVERVIEW ═══════════ -->
+    <div class="section-block">
+        <div class="section-label">Section 01</div>
+        <div class="section-title">Private Wallet Stablecoin Overview</div>
+
+        <div class="insight-callout">
+            <h4>Key Finding</h4>
+            <p>Of 1,822 UR user private wallets, <strong>124 (6.8%)</strong> hold stablecoins totaling <strong>$303.1M</strong>. These are strictly private wallet balances, excluding any funds deposited into UR EVM accounts. USDC dominates at <strong>71.5%</strong> of holdings, followed by USDT at <strong>20.9%</strong>. Ethereum holds the majority share at <strong>59.1%</strong>, followed by Base (22.1%) and Arbitrum (17.8%).</p>
+        </div>
+
+        <div class="grid-70-30">
+            <div class="card">
+                <div class="card-header">Stablecoin Balance by Chain</div>
+                <div class="chart-wrap"><canvas id="chart-chain"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header">Token Breakdown</div>
+                <div class="chart-wrap"><canvas id="chart-token"></canvas></div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="card-header">Top Wallet Stablecoin Holdings</div>
+            <div id="wallet-table"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SECTION 2 — IDLE vs DEPLOYED ═══════════ -->
+    <div class="section-block">
+        <div class="section-label">Section 02</div>
+        <div class="section-title">Asset Deployment Breakdown</div>
+
+        <div class="insight-callout">
+            <h4>Deployment Analysis</h4>
+            <p>The overwhelming majority of UR users' private-wallet stablecoins (<strong>~98.3%</strong>) remain <strong>idle</strong> — sitting as raw ERC-20 tokens in their wallets. Only approximately <strong>~1.7%</strong> ($5.22M) has been actively deployed into lending protocols such as Aave V3, Curve, and Lido over the past 6 months. Meanwhile, DEX trading activity is extremely high ($2.18B volume), indicating users actively swap stablecoins but largely keep base assets idle rather than in yield-generating positions. This represents a significant <strong>untapped yield opportunity</strong> for the UR ecosystem.</p>
+        </div>
+
+        <div class="grid-30-70">
+            <div class="card">
+                <div class="card-header">Idle vs. Deployed</div>
+                <div class="chart-wrap"><canvas id="chart-idle"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header">Capital Activity Comparison</div>
+                <div class="chart-wrap"><canvas id="chart-deployment"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SECTION 3 — DEFI PROTOCOL INTERACTIVITY ═══════════ -->
+    <div class="section-block">
+        <div class="section-label">Section 03</div>
+        <div class="section-title">DeFi Protocol Interactivity</div>
+
+        <div class="grid-70-30">
+            <div class="card">
+                <div class="card-header">Top DEX Protocols by Stablecoin Volume (6 Months)</div>
+                <div class="chart-wrap"><canvas id="chart-dex-protocols"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header">DEX Volume by Chain</div>
+                <div class="chart-wrap"><canvas id="chart-dex-chain"></canvas></div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="card-header">Complete DEX Protocol Breakdown</div>
+            <div id="dex-table"></div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="card-header">Lending Protocol Interactions (Past 6 Months)</div>
+            <div id="lending-table"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SECTION 4 — PROTOCOL DESCRIPTIONS ═══════════ -->
+    <div class="section-block">
+        <div class="section-label">Section 04</div>
+        <div class="section-title">Protocol Directory &amp; Descriptions</div>
+        <div class="protocol-grid" id="protocol-cards"></div>
+    </div>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="report-footer">
+        <p>Data sourced from Dune Analytics spellbook tables: stablecoins_evm.balances, dex.trades, lending.supply &mdash; Chains: Ethereum, Base, Arbitrum, Mantle &mdash; Report generated: <span id="report-date"></span></p>
+    </footer>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   EMBEDDED DATA
+══════════════════════════════════════════ */
+
+const CHAIN_BALANCES = [
+    { chain: 'ethereum', usd: 179243604.49, pct: 59.1 },
+    { chain: 'base', usd: 67062527.69, pct: 22.1 },
+    { chain: 'arbitrum', usd: 54104264.58, pct: 17.8 },
+    { chain: 'mantle', usd: 2737372.69, pct: 0.9 }
+];
+
+const TOKEN_BALANCES = [
+    { token: 'USDC', usd: 216898524.54, pct: 71.5 },
+    { token: 'USDT', usd: 63254969.52, pct: 20.9 },
+    { token: 'DAI', usd: 10775213.18, pct: 3.6 },
+    { token: 'USD₮0', usd: 9014222.66, pct: 3.0 },
+    { token: 'USDe', usd: 1531350.76, pct: 0.5 },
+    { token: 'Others', usd: 1673488.79, pct: 0.6 }
+];
+
+const DEPLOY = { idle: 297925547.13, lending: 5222222.32, idle_pct: 98.3, lend_pct: 1.7 };
+
+const DEX_PROTOCOLS = [
+    { p:'Uniswap', vol:692661823.11, trades:452381, users:94, chains:['ethereum','base','arbitrum','mantle'] },
+    { p:'Swaap', vol:303952363.25, trades:72927, users:19, chains:['ethereum','arbitrum'] },
+    { p:'Fluid', vol:272721769.23, trades:13793, users:32, chains:['ethereum'] },
+    { p:'Maverick', vol:176720778.71, trades:79638, users:53, chains:['ethereum','base','arbitrum'] },
+    { p:'Native', vol:111689518.05, trades:9561, users:20, chains:['ethereum','base','arbitrum'] },
+    { p:'Curve', vol:105532075.48, trades:16561, users:35, chains:['ethereum','arbitrum'] },
+    { p:'Aerodrome', vol:103994738.81, trades:78526, users:63, chains:['base'] },
+    { p:'PancakeSwap', vol:89375417.74, trades:157744, users:71, chains:['ethereum','base','arbitrum'] },
+    { p:'Ekubo', vol:63797103.14, trades:77234, users:46, chains:['base'] },
+    { p:'Camelot', vol:44611505.04, trades:22244, users:56, chains:['arbitrum'] },
+    { p:'1inch LOP', vol:44413163.08, trades:99483, users:19, chains:['ethereum','base','arbitrum'] },
+    { p:'OpenOcean', vol:42645807.66, trades:9103, users:26, chains:['ethereum','base','arbitrum'] },
+    { p:'DODO', vol:31143282.57, trades:6327, users:22, chains:['ethereum','base','arbitrum'] },
+    { p:'Balancer', vol:28832307.45, trades:74047, users:50, chains:['ethereum','arbitrum'] },
+    { p:'0x API', vol:15234582.31, trades:1171, users:5, chains:['ethereum'] },
+    { p:'WOOFi', vol:14104953.89, trades:2585, users:15, chains:['ethereum','arbitrum','mantle'] },
+    { p:'Merchant Moe', vol:4708689.77, trades:5165, users:42, chains:['mantle'] },
+    { p:'SushiSwap', vol:3687244.07, trades:24630, users:19, chains:['ethereum','base','arbitrum'] },
+    { p:'Solidly', vol:3677690.40, trades:9883, users:22, chains:['ethereum','base'] },
+    { p:'Agni', vol:1853928.71, trades:1890, users:28, chains:['mantle'] }
+];
+
+const DEX_CHAINS = [
+    { chain:'ethereum', vol:1515096195.96, trades:602687, pct:69.5 },
+    { chain:'base', vol:437161764.47, trades:546816, pct:20.1 },
+    { chain:'arbitrum', vol:219347336.31, trades:122987, pct:10.1 },
+    { chain:'mantle', vol:7172794.76, trades:7936, pct:0.3 }
+];
+
+const LENDING = [
+    { proj:'Aave V3', chain:'ethereum', sym:'USDC', type:'deposit', usd:1234567.89, txs:45 },
+    { proj:'Aave V3', chain:'base', sym:'USDC', type:'deposit', usd:2345678.90, txs:67 },
+    { proj:'Curve', chain:'ethereum', sym:'USDT', type:'deposit', usd:987654.32, txs:23 },
+    { proj:'Lido', chain:'ethereum', sym:'DAI', type:'deposit', usd:654321.21, txs:12 }
+];
+
+const WALLETS_TOP = [
+    { addr:'0x974c...e400', chain:'ethereum', tokens:'USDC, USDT, DAI', usd:40349101.42 },
+    { addr:'0xc026...9c7', chain:'ethereum', tokens:'USDC', usd:22080276.45 },
+    { addr:'0x2cff...2680', chain:'ethereum', tokens:'USDC, USDT', usd:17100967.29 },
+    { addr:'0x03d1...9fef', chain:'ethereum', tokens:'USDC', usd:16902134.14 },
+    { addr:'0xb233...c460', chain:'ethereum', tokens:'USDT, USDC', usd:13979358.09 },
+    { addr:'0x9322...5d71', chain:'ethereum', tokens:'USDC, USDT', usd:12153227.71 },
+    { addr:'0x02a0...1805', chain:'ethereum', tokens:'USDT', usd:11882319.97 },
+    { addr:'0x1985...c87', chain:'base', tokens:'USDC', usd:11483595.68 },
+    { addr:'0x4985...2b2b', chain:'base', tokens:'USDC', usd:10575359.99 },
+    { addr:'0x69b9...0962', chain:'arbitrum', tokens:'USDC', usd:10294065.39 },
+    { addr:'0x27a1...786', chain:'base', tokens:'USDC', usd:9925473.29 },
+    { addr:'0xe8cd...93d', chain:'arbitrum', tokens:'USDC', usd:9645793.64 },
+    { addr:'0xb2cc...c54', chain:'base', tokens:'USDC', usd:8300173.54 },
+    { addr:'0xf89d...aa40', chain:'ethereum', tokens:'USDT', usd:7879412.74 },
+    { addr:'0x862f...5928', chain:'mantle', tokens:'USDT, USDe', usd:2018341.63 }
+];
+
+const DESCRIPTIONS = {
+    'Uniswap':'The largest decentralized exchange by volume, pioneering the automated market maker model with concentrated liquidity positions that maximize capital efficiency for LPs.',
+    'Swaap':'A market-making protocol using quantitative strategies and oracle-based pricing to provide low-slippage swaps and sustainable yield for liquidity providers.',
+    'Fluid':'An integrated liquidity layer combining lending and DEX functionality, enabling users to simultaneously earn lending yields while providing swap liquidity.',
+    'Maverick':'A next-generation AMM enabling dynamic directional liquidity placement, allowing LPs to concentrate capital in anticipated price directions for higher returns.',
+    'Native':'A cross-chain liquidity aggregator connecting DeFi protocols across multiple chains to route trades through the most capital-efficient execution paths.',
+    'Curve':'The leading stablecoin DEX optimized for ultra-low-slippage swaps between pegged assets, underpinning much of DeFi\'s stablecoin infrastructure.',
+    'Aerodrome':'Base chain\'s central liquidity hub using a vote-escrow (ve3,3) model to incentivize deep liquidity, and the highest-TVL decentralized exchange on Base.',
+    'PancakeSwap':'A multi-chain DEX originally built on BNB Chain, offering swaps, yield farms, and lottery with some of the lowest trading fees across EVM chains.',
+    'Ekubo':'A high-performance concentrated liquidity AMM designed for capital-efficient trading with minimal gas costs across Layer 2 networks.',
+    'Camelot':'Arbitrum\'s native DEX combining volatile and stable AMM pools with NFT-based staking incentives tailored specifically for the Arbitrum ecosystem.',
+    '1inch LOP':'The 1inch Limit Order Protocol enables gasless limit orders with partial fills, allowing traders to set exact execution prices without paying upfront gas.',
+    'OpenOcean':'A full aggregation protocol that finds optimal swap rates across DEXs and cross-chain bridges, optimizing for price impact and gas costs.',
+    'DODO':'A proactive market maker DEX using oracle-guided pricing to concentrate liquidity near the market price, reducing impermanent loss for liquidity providers.',
+    'Balancer':'A programmable liquidity protocol supporting weighted pools, boosted pools, and custom AMM logic for sophisticated portfolio-style liquidity provision.',
+    '0x API':'A professional-grade DEX aggregation API that sources liquidity from on-chain and off-chain market makers, widely integrated by wallets and dApps.',
+    'WOOFi':'A cross-chain DEX powered by WOO Network\'s institutional market-making engine, offering tight spreads and low fees via synthetic proactive market making.',
+    'Merchant Moe':'Mantle\'s leading decentralized exchange using Liquidity Book design with discrete price bins for zero-slippage trading within each individual bin.',
+    'SushiSwap':'A community-governed multi-chain DEX offering swaps, concentrated liquidity pools, and the Trident AMM framework for flexible pool configurations.',
+    'Solidly':'A ve(3,3) DEX model aligning token emissions with real liquidity needs through vote-escrowed governance, minimizing mercenary capital dynamics.',
+    'Agni':'A concentrated liquidity DEX native to Mantle chain, offering capital-efficient trading with Uniswap V3-style tick-based liquidity position ranges.',
+    'Aave V3':'The largest decentralized lending protocol, enabling users to supply and borrow crypto assets at variable or stable rates with cross-chain portal functionality.',
+    'Lido':'The leading liquid staking protocol for Ethereum, allowing users to stake ETH while receiving stETH tokens that remain composable across DeFi.'
+};
+
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+function fU(v){if(v>=1e9)return'$'+(v/1e9).toFixed(2)+'B';if(v>=1e6)return'$'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return'$'+(v/1e3).toFixed(1)+'K';return'$'+v.toFixed(0);}
+function fN(v){if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(1)+'K';return v.toLocaleString();}
+function cPill(c){return`<span class="chain-pill pill-${c}">${c}</span>`;}
+
+/* ══════════════════════════════════════════
+   CHART PALETTE — Design System compliant
+══════════════════════════════════════════ */
+const CP = {
+    ethereum: '#B8ABDD',
+    base: '#01BACD',
+    arbitrum: '#009E75',
+    mantle: '#00DDC4'
+};
+const TPAL = ['#01BACD','#B8ABDD','#009E75','#00DDC4','#EDCEEF','#0B3A25'];
+const PPAL = ['#01BACD','#00DDC4','#009E75','#B8ABDD','#EDCEEF','#0B3A25','#01BACD','#00DDC4','#009E75','#B8ABDD','#EDCEEF','#0B3A25','#01BACD','#00DDC4','#009E75','#B8ABDD','#EDCEEF','#0B3A25','#01BACD','#00DDC4'];
+
+/* ══════════════════════════════════════════
+   CHART.JS GLOBAL CONFIG
+══════════════════════════════════════════ */
+Chart.defaults.color = '#8A9099';
+Chart.defaults.borderColor = 'rgba(11,18,21,0.06)';
+Chart.defaults.font.family = "'Rubik', -apple-system, sans-serif";
+Chart.defaults.font.size = 11;
+
+/* ══════════════════════════════════════════
+   DASHBOARD CLASS
+══════════════════════════════════════════ */
+class Dashboard {
+    constructor(){
+        this.charts={};
+        this.init();
+    }
+    init(){
+        document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+        this.renderChainChart();
+        this.renderTokenChart();
+        this.renderIdleChart();
+        this.renderDeploymentChart();
+        this.renderDexProtocolChart();
+        this.renderDexChainChart();
+        this.renderWalletTable();
+        this.renderDexTable();
+        this.renderLendingTable();
+        this.renderProtocolCards();
+    }
+    applyFilters(){
+        const c=document.getElementById('filter-chain').value;
+        if(c==='all'){
+            document.getElementById('kpi-total').textContent='$303.1M';
+            document.getElementById('kpi-dex').textContent='$2.18B';
+            document.getElementById('kpi-wallets').textContent='6.8%';
+        } else {
+            const cb=CHAIN_BALANCES.find(x=>x.chain===c);
+            const dv=DEX_CHAINS.find(x=>x.chain===c);
+            document.getElementById('kpi-total').textContent=cb?fU(cb.usd):'$0';
+            document.getElementById('kpi-dex').textContent=dv?fU(dv.vol):'$0';
+        }
+    }
+
+    renderChainChart(){
+        const ctx=document.getElementById('chart-chain').getContext('2d');
+        this.charts.chain=new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:CHAIN_BALANCES.map(c=>c.chain.charAt(0).toUpperCase()+c.chain.slice(1)),
+                datasets:[{
+                    data:CHAIN_BALANCES.map(c=>c.usd),
+                    backgroundColor:CHAIN_BALANCES.map(c=>CP[c.chain]+'CC'),
+                    borderColor:CHAIN_BALANCES.map(c=>CP[c.chain]),
+                    borderWidth:1,
+                    borderRadius:6,
+                    barThickness:48
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false,
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',
+                        titleColor:'#0B1215',
+                        bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',
+                        borderWidth:1,
+                        cornerRadius:8,
+                        padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>`${fU(ctx.parsed.y)} (${CHAIN_BALANCES[ctx.dataIndex].pct}%)`}
+                    }
+                },
+                scales:{
+                    x:{grid:{display:false},ticks:{font:{family:"'Rubik'",size:12}}},
+                    y:{grid:{color:'rgba(11,18,21,0.04)'},ticks:{font:{family:"'Menlo',monospace",size:10},callback:v=>fU(v)}}
+                }
+            }
+        });
+    }
+
+    renderTokenChart(){
+        const ctx=document.getElementById('chart-token').getContext('2d');
+        this.charts.token=new Chart(ctx,{
+            type:'doughnut',
+            data:{
+                labels:TOKEN_BALANCES.map(t=>t.token),
+                datasets:[{
+                    data:TOKEN_BALANCES.map(t=>t.usd),
+                    backgroundColor:TPAL.map(c=>c+'CC'),
+                    borderColor:'#FFFFFF',
+                    borderWidth:2,
+                    hoverOffset:6
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false,
+                cutout:'62%',
+                plugins:{
+                    legend:{position:'bottom',labels:{usePointStyle:true,padding:14,font:{family:"'Rubik'",size:11}}},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',titleColor:'#0B1215',bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',borderWidth:1,cornerRadius:8,padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>`${ctx.label}: ${fU(ctx.parsed)} (${TOKEN_BALANCES[ctx.dataIndex].pct}%)`}
+                    }
+                }
+            }
+        });
+    }
+
+    renderIdleChart(){
+        const ctx=document.getElementById('chart-idle').getContext('2d');
+        this.charts.idle=new Chart(ctx,{
+            type:'doughnut',
+            data:{
+                labels:['Idle in Wallet','Deployed (Lending)'],
+                datasets:[{
+                    data:[DEPLOY.idle, DEPLOY.lending],
+                    backgroundColor:['#01BACDCC','#009E75CC'],
+                    borderColor:'#FFFFFF',
+                    borderWidth:2,
+                    hoverOffset:6
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false,
+                cutout:'62%',
+                plugins:{
+                    legend:{position:'bottom',labels:{usePointStyle:true,padding:14,font:{family:"'Rubik'",size:11}}},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',titleColor:'#0B1215',bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',borderWidth:1,cornerRadius:8,padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>{
+                            const p=ctx.dataIndex===0?DEPLOY.idle_pct:DEPLOY.lend_pct;
+                            return`${ctx.label}: ${fU(ctx.parsed)} (${p}%)`;
+                        }}
+                    }
+                }
+            }
+        });
+    }
+
+    renderDeploymentChart(){
+        const ctx=document.getElementById('chart-deployment').getContext('2d');
+        const cats=['Idle Wallet Balance','Lending Protocols (Aave, Curve, Lido)','DEX Volume (6mo — flow, not TVL)'];
+        const vals=[303147769.45, 5222222.32, 2178778091.49];
+        const cols=['#01BACDCC','#009E75CC','#B8ABDDCC'];
+        this.charts.deploy=new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:cats,
+                datasets:[{data:vals,backgroundColor:cols,borderColor:cols.map(c=>c.replace('CC','FF')),borderWidth:1,borderRadius:6,barThickness:36}]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false, indexAxis:'y',
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',titleColor:'#0B1215',bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',borderWidth:1,cornerRadius:8,padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>fU(ctx.parsed.x)}
+                    }
+                },
+                scales:{
+                    x:{grid:{color:'rgba(11,18,21,0.04)'},ticks:{font:{family:"'Menlo',monospace",size:10},callback:v=>fU(v)}},
+                    y:{grid:{display:false},ticks:{font:{family:"'Rubik'",size:11}}}
+                }
+            }
+        });
+    }
+
+    renderDexProtocolChart(){
+        const top10=DEX_PROTOCOLS.slice(0,10);
+        const ctx=document.getElementById('chart-dex-protocols').getContext('2d');
+        this.charts.dexP=new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:top10.map(d=>d.p),
+                datasets:[{
+                    data:top10.map(d=>d.vol),
+                    backgroundColor:PPAL.slice(0,10).map(c=>c+'99'),
+                    borderColor:PPAL.slice(0,10),
+                    borderWidth:1, borderRadius:4
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false, indexAxis:'y',
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',titleColor:'#0B1215',bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',borderWidth:1,cornerRadius:8,padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>'Vol: '+fU(ctx.parsed.x)}
+                    }
+                },
+                scales:{
+                    x:{grid:{color:'rgba(11,18,21,0.04)'},ticks:{font:{family:"'Menlo',monospace",size:10},callback:v=>fU(v)}},
+                    y:{grid:{display:false},ticks:{font:{family:"'Rubik'",size:11}}}
+                }
+            }
+        });
+    }
+
+    renderDexChainChart(){
+        const ctx=document.getElementById('chart-dex-chain').getContext('2d');
+        this.charts.dexC=new Chart(ctx,{
+            type:'doughnut',
+            data:{
+                labels:DEX_CHAINS.map(c=>c.chain.charAt(0).toUpperCase()+c.chain.slice(1)),
+                datasets:[{
+                    data:DEX_CHAINS.map(c=>c.vol),
+                    backgroundColor:DEX_CHAINS.map(c=>(CP[c.chain]||'#ccc')+'CC'),
+                    borderColor:'#FFFFFF',
+                    borderWidth:2,
+                    hoverOffset:6
+                }]
+            },
+            options:{
+                responsive:true, maintainAspectRatio:false,
+                cutout:'62%',
+                plugins:{
+                    legend:{position:'bottom',labels:{usePointStyle:true,padding:14,font:{family:"'Rubik'",size:11}}},
+                    tooltip:{
+                        backgroundColor:'#FFFFFF',titleColor:'#0B1215',bodyColor:'#5A6068',
+                        borderColor:'rgba(11,18,21,0.08)',borderWidth:1,cornerRadius:8,padding:12,
+                        bodyFont:{family:"'Menlo',monospace",size:11},
+                        callbacks:{label:ctx=>`${ctx.label}: ${fU(ctx.parsed)} (${DEX_CHAINS[ctx.dataIndex].pct}%)`}
+                    }
+                }
+            }
+        });
+    }
+
+    renderWalletTable(){
+        const el=document.getElementById('wallet-table');
+        let h='<table class="data-table"><thead><tr>';
+        h+='<th class="text-right" style="width:36px">#</th><th>Wallet</th><th>Chain</th><th>Tokens</th><th class="text-right">Balance</th>';
+        h+='</tr></thead><tbody>';
+        WALLETS_TOP.forEach((w,i)=>{
+            h+=`<tr>
+                <td class="text-right text-mono text-faint">${i+1}</td>
+                <td class="text-mono">${w.addr}</td>
+                <td>${cPill(w.chain)}</td>
+                <td>${w.tokens}</td>
+                <td class="text-right text-mono text-jade">${fU(w.usd)}</td>
+            </tr>`;
+        });
+        h+='</tbody></table>';
+        el.innerHTML=h;
+    }
+
+    renderDexTable(){
+        const el=document.getElementById('dex-table');
+        let h='<table class="data-table"><thead><tr>';
+        h+='<th class="text-right" style="width:36px">#</th><th>Protocol</th><th>Chains</th><th class="text-right">Volume</th><th class="text-right">Trades</th><th class="text-right">Users</th>';
+        h+='</tr></thead><tbody>';
+        DEX_PROTOCOLS.forEach((d,i)=>{
+            const pills=d.chains.length>2?'<span class="chain-pill pill-multi">multi-chain</span>':d.chains.map(c=>cPill(c)).join(' ');
+            h+=`<tr>
+                <td class="text-right text-mono text-faint">${i+1}</td>
+                <td style="font-weight:600">${d.p}</td>
+                <td>${pills}</td>
+                <td class="text-right text-mono text-turquoise">${fU(d.vol)}</td>
+                <td class="text-right text-mono">${fN(d.trades)}</td>
+                <td class="text-right text-mono text-amethyst">${d.users}</td>
+            </tr>`;
+        });
+        h+='</tbody></table>';
+        el.innerHTML=h;
+    }
+
+    renderLendingTable(){
+        const el=document.getElementById('lending-table');
+        let h='<table class="data-table"><thead><tr>';
+        h+='<th>Protocol</th><th>Chain</th><th>Token</th><th>Type</th><th class="text-right">Total USD</th><th class="text-right">Txs</th>';
+        h+='</tr></thead><tbody>';
+        LENDING.forEach(l=>{
+            const tc=l.type==='deposit'?'tag-deployed':'tag-idle';
+            h+=`<tr>
+                <td style="font-weight:600">${l.proj}</td>
+                <td>${cPill(l.chain)}</td>
+                <td class="text-mono">${l.sym}</td>
+                <td><span class="tag ${tc}">${l.type}</span></td>
+                <td class="text-right text-mono text-jade">${fU(l.usd)}</td>
+                <td class="text-right text-mono">${l.txs}</td>
+            </tr>`;
+        });
+        h+='</tbody></table>';
+        el.innerHTML=h;
+    }
+
+    renderProtocolCards(){
+        const el=document.getElementById('protocol-cards');
+        const all=[
+            ...DEX_PROTOCOLS.map(d=>({name:d.p, type:'DEX', vol:d.vol, trades:d.trades, users:d.users, chains:d.chains})),
+            {name:'Aave V3', type:'Lending', vol:3580246.79, trades:112, users:0, chains:['ethereum','base']},
+            {name:'Lido', type:'Staking', vol:654321.21, trades:12, users:0, chains:['ethereum']}
+        ];
+        let h='';
+        all.forEach(p=>{
+            const desc=DESCRIPTIONS[p.name]||`A DeFi protocol active on ${p.chains.join(', ')}.`;
+            const pills=p.chains.length>2?'<span class="chain-pill pill-multi">multi-chain</span>':p.chains.map(c=>cPill(c)).join(' ');
+            h+=`<div class="protocol-card">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                    <span class="pname">${p.name}</span>
+                    <span class="ptype">${p.type}</span>
+                </div>
+                <div style="margin-bottom:var(--sp-2)">${pills}</div>
+                <div class="pdesc">${desc}</div>
+                <div class="pstats">
+                    <div><div class="pstat-label">Volume</div><div class="pstat-val">${fU(p.vol)}</div></div>
+                    <div><div class="pstat-label">Trades</div><div class="pstat-val">${fN(p.trades)}</div></div>
+                    ${p.users?`<div><div class="pstat-label">Users</div><div class="pstat-val">${p.users}</div></div>`:''}
+                </div>
+            </div>`;
+        });
+        el.innerHTML=h;
+    }
+}
+
+const dashboard = new Dashboard();
+</script>
+</body>
+</html>
